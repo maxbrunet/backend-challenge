@@ -1,0 +1,32 @@
+dist: xenial
+
+language: go
+go: 1.12.x
+
+env:
+  global:
+    - IMAGE_TAG="${TRAVIS_TAG:-${TRAVIS_COMMIT:0:7}}"
+    - IMAGE_NAME='backend-challenge'
+
+services:
+  - docker
+
+before_install:
+  - go get -u golang.org/x/lint/golint 
+
+script:
+  - gofmt -s -l .
+  - golint -set_exit_status .
+  - go vet .
+  - docker-compose -f docker-compose.test.yml up sut
+  - docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" .
+  - docker tag "${IMAGE_NAME}:${IMAGE_TAG}" "${IMAGE_NAME}:latest"
+
+deploy:
+  provider: script
+  script: >
+    docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+      && docker push "${IMAGE_NAME}:${IMAGE_TAG}"
+      && docker push "${IMAGE_NAME}:latest"
+  on:
+    tags: true

@@ -1,3 +1,48 @@
+# Backend Challenge
+
+A Simple Web Chat API
+
+## Requirements
+
+* [Docker](https://docs.docker.com/)
+* [Docker Compose](https://docs.docker.com/compose/)
+
+## Development
+
+You can run the app with:
+
+```shell
+docker-compose up
+```
+
+Then, you should be able to access it at [127.0.0.1:8080](http://127.0.0.1:8080).
+
+## Build
+
+Build with:
+
+```shell
+docker build -t backend-challenge .
+```
+
+And run with:
+
+```shell
+docker run --name backend-challenge -d --publish 8080:8080 \
+  --env DB_CONNSTR='postgres://<user>@<host>/<dbname>?sslmode=disable'
+  backend-challenge
+```
+
+## Test
+
+You can run the test suite with:
+
+```shell
+docker-compose -f docker-compose.test.yml -p backend-challenge_test up sut
+```
+
+---
+
 # Ada Support Backend Coding Challenge
 
 Hello there! :wave:
